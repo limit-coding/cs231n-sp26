@@ -1,0 +1,13 @@
+# 数据集（太大）
+assignment/assignment1/cs231n/datasets/cifar-10-batches-py/
+assignment/assignment1/cs231n/datasets/*.npz
+assignment/assignment1/cs231n/datasets/*.tar.gz
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
