@@ -52,7 +52,18 @@ def softmax_loss_naive(W, X, y, reg):
     # loss is being computed. As a result you may need to modify some of the    #
     # code above to compute the gradient.                                       #
     #############################################################################
-
+    for i in range(num_train):
+        scores = X[i].dot(W)
+        scores -= np.max(scores)
+        p = np.exp(scores)
+        p /= p.sum()  # normalize
+        for j in range(num_classes):
+            if j==y[i]:
+                dW[:,j]+=(p[j]-1) * X[i]
+            else:
+                dW[:,j]+=p[j] * X[i]
+    dW/=num_train
+    dW+=2*reg*W
 
     return loss, dW
 
@@ -73,7 +84,12 @@ def softmax_loss_vectorized(W, X, y, reg):
     # Implement a vectorized version of the softmax loss, storing the           #
     # result in loss.                                                           #
     #############################################################################
+    num_train=X.shape[0]
 
+    scores=X.dot(W)
+    scores-=np.max(scores,axis=1,keepdims=True)
+    p=np.exp(scores)
+    p/=np.sum(p,axis=1,keepdims=True)
 
     #############################################################################
     # TODO:                                                                     #
@@ -84,6 +100,13 @@ def softmax_loss_vectorized(W, X, y, reg):
     # to reuse some of the intermediate values that you used to compute the     #
     # loss.                                                                     #
     #############################################################################
+    loss=-np.sum(np.log(p[np.arange(num_train),y]))
+    loss=loss/num_train+reg*np.sum(W*W)
 
+    dp=p.copy()
+    dp[np.arange(num_train),y]-=1
+    dW=X.T.dot(dp)
+    dW/=num_train
+    dW+=2*reg*W
 
     return loss, dW
